@@ -23,6 +23,15 @@
 - 次は「App1 バックエンドAPI連携 (Gemini / Claude / Database)」の実装に進みます。
 - APIルート (`/api/generate-posts` など) の作成およびFirestoreとの連携を行います。
 
+## セキュリティ・Stripe対応ステータス
+- **Basic認証**: `middleware.ts`を作成・導入済（`/dashboard`、`/admin`保護用。本番の`.env`でID/PASS設定が必要）。
+- **セキュリティヘッダー**: `next.config.ts`にて推奨ヘッダー（X-Content-Type-Options等）追加済。
+- **Stripe設定**: `stripe` SDKインストールおよびWebhookエンドポイント用雛形 (`/api/webhooks/stripe`) 作成済。
+
 ## ユーザー依頼事項ステータス
 - `FIREBASE_ADMIN_SDK_KEY` を `.env.local` に自動入力しました。
-- `NEXT_PUBLIC_FIREBASE_API_KEY` の取得方法をご案内し、ユーザーの入力をお待ちしています。
+- 次のAPIキー取得方法をご案内中で、設定をお待ちしています。
+  - Firebase: `NEXT_PUBLIC_FIREBASE_API_KEY`
+  - Cloudflare: `CLOUDFLARE_R2_ACCESS_KEY`
+  - Google Sheets: `GOOGLE_SHEETS_SERVICE_ACCOUNT`
+- **GitHubへのプッシュ完了**: `https://github.com/Ogin-ogin/app-dev-business.git` に初期コードをプッシュしました。Vercel側からこのリポジトリをインポートしてデプロイをお願いいたします。

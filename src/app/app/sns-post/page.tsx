@@ -13,15 +13,30 @@ export default function GeneratorPage() {
     const handleGenerate = async () => {
         if (!topic) return;
         setLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            setResult({
-                twitter: "Excited to share our new AI web app platform! 🚀 Build tools 10x faster and 20x cheaper. Perfect for freelancers and agencies. Let's revolutionize development together! #AI #WebDev #Nextjs",
-                linkedin: "I'm thrilled to announce the launch of our new AI-powered web app development platform.\n\nAfter months of hard work, we've created a solution that allows you to build production-ready applications 10x faster and at a fraction of the cost of traditional outsourcing.\n\nBuilt on Next.js, Firebase, and Vercel, our platform leverages the power of Gemini and Claude to turn your ideas into functional products.\n\nLet me know your thoughts!",
-                instagram: "🚀 Exciting news! We just launched our AI Web App Platform!\n\nBuild apps 10x faster with AI.\n💡 Smart UI generation\n⚡ Blazing fast Next.js stack\n💰 20x cheaper than agencies\n\nLink in bio to get started!\n.\n.\n.\n#ai #webdevelopment #techstartup #coding #freelancer #productivity"
+        setResult(null); // Clear previous results
+
+        try {
+            const response = await fetch('/api/generate-posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ topic, tone }),
             });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to generate posts');
+            }
+
+            const data = await response.json();
+            setResult(data.result);
+        } catch (error: any) {
+            console.error('Error calling generate API:', error);
+            alert(`Error: ${error.message}`);
+        } finally {
             setLoading(false);
-        }, 1500);
+        }
     };
 
     const copyToClipboard = (text: string, index: number) => {
@@ -58,8 +73,8 @@ export default function GeneratorPage() {
                                 key={t}
                                 onClick={() => setTone(t.toLowerCase())}
                                 className={`py-2 px-3 text-sm rounded-md border text-center transition-colors ${tone === t.toLowerCase()
-                                        ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10 text-black dark:text-white font-medium"
-                                        : "border-black/[0.1] dark:border-white/[0.1] text-black/70 dark:text-white/70 hover:bg-black/[0.02] dark:hover:bg-white/[0.02]"
+                                    ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10 text-black dark:text-white font-medium"
+                                    : "border-black/[0.1] dark:border-white/[0.1] text-black/70 dark:text-white/70 hover:bg-black/[0.02] dark:hover:bg-white/[0.02]"
                                     }`}
                             >
                                 {t}

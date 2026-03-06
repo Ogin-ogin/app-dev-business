@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+
+export const metadata: Metadata = {
+    title: "既製品アプリ一覧",
+    description:
+        "HoshiAppが提供するAI搭載の既製品ウェブアプリ一覧。SNS投稿自動生成ツール・フリーランス収支ダッシュボードなど。月額¥480〜の手頃な価格でご利用いただけます。",
+};
 
 export default function ProductsPage() {
     const products = [
@@ -36,10 +43,9 @@ export default function ProductsPage() {
             <Header />
             <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-16">
                 <div className="mb-12">
-                    <h1 className="text-4xl font-bold mb-4">Ready-made Apps</h1>
+                    <h1 className="text-4xl font-bold mb-4">既製品アプリ一覧</h1>
                     <p className="text-black/60 dark:text-white/60">
-                        Browse our catalog of pre-built, production-ready AI tools.
-                        Available as a monthly subscription or lifetime buyout.
+                        すぐに使えるAIツールを月額サブスクリプションまたは買い切りでご利用いただけます。
                     </p>
                 </div>
 
@@ -55,13 +61,13 @@ export default function ProductsPage() {
                                         <h2 className="text-2xl font-semibold group-hover:underline underline-offset-4 decoration-[var(--color-accent)]">{p.name}</h2>
                                     </div>
                                     <div className="text-right">
-                                        <div className="font-semibold text-lg">¥{p.monthly.toLocaleString()} <span className="text-sm font-normal text-black/60 dark:text-white/60">/ mo</span></div>
-                                        <div className="text-sm text-black/60 dark:text-white/60">or ¥{p.buyout.toLocaleString()} buyout</div>
+                                        <div className="font-semibold text-lg">¥{p.monthly.toLocaleString()} <span className="text-sm font-normal text-black/60 dark:text-white/60">/ 月</span></div>
+                                        <div className="text-sm text-black/60 dark:text-white/60">または ¥{p.buyout.toLocaleString()} 買い切り</div>
                                     </div>
                                 </div>
                                 <p className="text-black/80 dark:text-white/80 mb-6">{p.desc}</p>
                                 <div className="font-medium flex items-center gap-1 group-hover:text-[var(--color-accent)] dark:group-hover:text-[var(--color-accent)] transition-colors">
-                                    View details <ArrowRight className="w-4 h-4" />
+                                    詳細を見る <ArrowRight className="w-4 h-4" />
                                 </div>
                             </div>
                         </Link>
