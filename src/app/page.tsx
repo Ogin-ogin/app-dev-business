@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { ArrowRight, Zap, Code, Rocket, CheckCircle } from "lucide-react";
+import { ArrowRight, Zap, Code, Rocket } from "lucide-react";
 import AppShowcase from "@/components/AppShowcase";
 
 export const metadata: Metadata = {
@@ -149,62 +149,6 @@ export default function Home() {
                 <p className="text-black/60 dark:text-white/60 leading-relaxed text-sm">{desc}</p>
               </div>
             ))}
-          </div>
-        </section>
-
-        {/* Pricing Section */}
-        <section id="pricing" className="px-6 py-20 w-full mx-auto max-w-5xl border-t border-black/[0.05] dark:border-white/[0.05]">
-          <h2 className="text-3xl font-bold mb-4 text-center">カスタム開発料金</h2>
-          <p className="text-center text-black/50 dark:text-white/50 mb-12">
-            シンプルで分かりやすい料金設定。まずは無料相談から。
-          </p>
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* 小規模 */}
-            <div className="p-6 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-colors">
-              <h3 className="font-semibold text-lg mb-1">小規模</h3>
-              <p className="text-black/50 dark:text-white/50 text-sm mb-4">LP・シンプルツール（〜3画面）</p>
-              <p className="text-3xl font-bold mb-6">¥3,980<span className="text-base font-normal text-black/50 dark:text-white/50">〜</span></p>
-              <ul className="space-y-2 text-sm text-black/60 dark:text-white/60">
-                {["3画面まで", "レスポンシブ対応", "Vercelデプロイ込み"].map(f => (
-                  <li key={f} className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 shrink-0" style={{ color: "var(--color-accent)" }} />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            {/* 中規模 */}
-            <div className="p-6 rounded-2xl border-2 relative" style={{ borderColor: "var(--color-accent)" }}>
-              <span
-                className="absolute -top-3 left-1/2 -translate-x-1/2 text-black text-xs font-bold px-3 py-1 rounded-full"
-                style={{ background: "var(--color-accent)" }}
-              >人気</span>
-              <h3 className="font-semibold text-lg mb-1">中規模</h3>
-              <p className="text-black/50 dark:text-white/50 text-sm mb-4">管理画面・API連携（〜10画面）</p>
-              <p className="text-3xl font-bold mb-6">¥9,800<span className="text-base font-normal text-black/50 dark:text-white/50">〜</span></p>
-              <ul className="space-y-2 text-sm text-black/60 dark:text-white/60">
-                {["10画面まで", "Firebase認証・DB連携", "外部API連携", "Vercelデプロイ込み"].map(f => (
-                  <li key={f} className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 shrink-0" style={{ color: "var(--color-accent)" }} />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            {/* 大規模 */}
-            <div className="p-6 rounded-2xl border border-black/[0.08] dark:border-white/[0.08] hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-colors">
-              <h3 className="font-semibold text-lg mb-1">大規模</h3>
-              <p className="text-black/50 dark:text-white/50 text-sm mb-4">複数機能・DB設計・認証込み</p>
-              <p className="text-3xl font-bold mb-6">¥29,800<span className="text-base font-normal text-black/50 dark:text-white/50">〜</span></p>
-              <ul className="space-y-2 text-sm text-black/60 dark:text-white/60">
-                {["画面数無制限", "DB設計・セキュリティ設定", "決済（Stripe）連携", "保守サポートオプション"].map(f => (
-                  <li key={f} className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 shrink-0" style={{ color: "var(--color-accent)" }} />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
         </section>
 

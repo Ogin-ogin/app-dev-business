@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Sparkles, Send, Loader2, FileCheck } from 'lucide-react';
+import { Sparkles, Send, Loader2, FileCheck, Info } from 'lucide-react';
 
 interface Message {
     role: 'user' | 'assistant';
@@ -146,7 +146,10 @@ export default function OrderPage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
                     <div className="bg-white dark:bg-[#191919] rounded-2xl p-6 max-w-md w-full shadow-2xl">
                         <h2 className="text-xl font-bold mb-1 text-black dark:text-white">プランを選択</h2>
-                        <p className="text-sm text-black/50 dark:text-white/50 mb-6">仕様書をダウンロードするプランを選んでください</p>
+                        <p className="text-sm text-black/50 dark:text-white/50 mb-3">仕様書・開発ドキュメントの取得プランを選んでください</p>
+                        <div className="mb-4 p-3 rounded-lg bg-black/[0.04] dark:bg-white/[0.05] text-xs text-black/60 dark:text-white/60 leading-relaxed">
+                            ※ この費用は仕様書の生成・取得に対するものです。完成品のご利用には別途費用（買い切りまたはサブスク）が発生します。
+                        </div>
                         <div className="space-y-3 mb-5">
                             <button
                                 onClick={() => handleCheckout('single')}
@@ -200,6 +203,30 @@ export default function OrderPage() {
                     <p className="text-black/60 dark:text-white/60 text-sm">
                         AIコンサルタントがあなたの要件をヒアリングし、仕様書と見積もりを自動生成します。
                     </p>
+                </div>
+
+                {/* Fee disclosure */}
+                <div className="mb-6 rounded-xl border border-black/[0.1] dark:border-white/[0.1] bg-black/[0.02] dark:bg-white/[0.03] p-4">
+                    <div className="flex items-start gap-3">
+                        <Info className="w-4 h-4 mt-0.5 shrink-0 text-black/50 dark:text-white/50" />
+                        <div className="text-sm text-black/70 dark:text-white/70 space-y-2 leading-relaxed">
+                            <p className="font-semibold text-black dark:text-white">ご利用前にご確認ください</p>
+                            <ul className="space-y-1.5">
+                                <li className="flex items-start gap-2">
+                                    <span className="shrink-0 mt-0.5 w-1.5 h-1.5 rounded-full bg-black/40 dark:bg-white/40 inline-block" />
+                                    <span><strong>ヒアリング料（¥330〜）</strong>は、仕様書・開発ドキュメントの生成・取得に対する費用です。</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="shrink-0 mt-0.5 w-1.5 h-1.5 rounded-full bg-black/40 dark:bg-white/40 inline-block" />
+                                    <span>開発完了後の<strong>完成品のご利用には別途費用</strong>が発生します。APIや外部サービスを使わないアプリは<strong>買い切り</strong>、AI機能・クラウド費用が継続的に発生するアプリは<strong>月額サブスク</strong>でのご提供となります。</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="shrink-0 mt-0.5 w-1.5 h-1.5 rounded-full bg-black/40 dark:bg-white/40 inline-block" />
+                                    <span>仕様書の内容をもとに開発を進めるかどうかは、最終的にお客様がご判断いただけます。</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Chat Container */}

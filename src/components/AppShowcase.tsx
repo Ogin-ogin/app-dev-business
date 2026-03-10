@@ -58,7 +58,7 @@ export default function AppShowcase() {
         const t = setInterval(() => {
             setActive(a => (a + 1) % APPS.length);
             setSlide(0);
-        }, 4000);
+        }, 7000);
         return () => clearInterval(t);
     }, []);
 
