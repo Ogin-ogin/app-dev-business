@@ -3,9 +3,10 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { ArrowLeft, Check, Zap, Loader2 } from "lucide-react";
+import { ArrowLeft, Check, Zap, Loader2, Play, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import { SnsPostPreview, FinancePreview, LifelogPreview, FumanRadarPreview } from "@/components/app-previews/AppPreviews";
 
 type ProductInfo = {
     name: string;
@@ -14,6 +15,11 @@ type ProductInfo = {
     desc: string;
     features: string[];
     priceEnvKey: string;
+    demoHref: string;
+    rating: number;
+    reviews: number;
+    slideLabels: string[];
+    PreviewComponent: React.ComponentType<{ slide: number }>;
 };
 
 const PRODUCTS: Record<string, ProductInfo> = {
@@ -30,6 +36,11 @@ const PRODUCTS: Record<string, ProductInfo> = {
             "テンプレート保存機能",
         ],
         priceEnvKey: "NEXT_PUBLIC_PRICE_APP1_MONTHLY",
+        demoHref: "/demo/sns-post",
+        rating: 4.8,
+        reviews: 124,
+        slideLabels: ["入力画面", "生成結果", "履歴"],
+        PreviewComponent: SnsPostPreview,
     },
     "freelance-dashboard": {
         name: "フリーランス収支ダッシュボード",
@@ -44,6 +55,11 @@ const PRODUCTS: Record<string, ProductInfo> = {
             "CSV書き出し（BOM付きUTF-8）",
         ],
         priceEnvKey: "NEXT_PUBLIC_PRICE_APP2_MONTHLY",
+        demoHref: "/demo/finance",
+        rating: 4.6,
+        reviews: 89,
+        slideLabels: ["ダッシュボード", "収支一覧", "AIレポート"],
+        PreviewComponent: FinancePreview,
     },
     "life-log-tool": {
         name: "AIライフログ＆振り返り",
@@ -58,6 +74,11 @@ const PRODUCTS: Record<string, ProductInfo> = {
             "連続記録ストリーク",
         ],
         priceEnvKey: "NEXT_PUBLIC_PRICE_APP3_MONTHLY",
+        demoHref: "/demo/lifelog",
+        rating: 4.7,
+        reviews: 203,
+        slideLabels: ["今日のログ", "カレンダー", "AIレポート"],
+        PreviewComponent: LifelogPreview,
     },
     "fuman-radar": {
         name: "不満レーダー",
@@ -74,37 +95,47 @@ const PRODUCTS: Record<string, ProductInfo> = {
             "個人不満分析レポート",
         ],
         priceEnvKey: "NEXT_PUBLIC_PRICE_APP4_MONTHLY",
+        demoHref: "/demo/fuman-radar",
+        rating: 4.5,
+        reviews: 67,
+        slideLabels: ["タイムライン", "UMAPマップ", "AI愚痴通話"],
+        PreviewComponent: FumanRadarPreview,
     },
 };
+
+function StarRating({ rating, reviews }: { rating: number; reviews: number }) {
+    return (
+        <div className="flex items-center gap-1.5">
+            {[1,2,3,4,5].map(i => (
+                <Star key={i} className={`w-4 h-4 ${i <= Math.floor(rating) ? "fill-[var(--color-accent)] text-[var(--color-accent)]" : "text-black/20 dark:text-white/20"}`} />
+            ))}
+            <span className="text-sm font-medium text-black dark:text-white">{rating.toFixed(1)}</span>
+            <span className="text-sm text-black/40 dark:text-white/40">({reviews}件のレビュー)</span>
+        </div>
+    );
+}
 
 export default function ProductDetailPage() {
     const params = useParams();
     const [loadingPlan, setLoadingPlan] = useState<"monthly" | null>(null);
+    const [slide, setSlide] = useState(0);
 
     const productId = params.id as string;
     const product = PRODUCTS[productId] || PRODUCTS["sns-post-ai"];
+    const { PreviewComponent } = product;
 
     async function handleCheckout(plan: "monthly") {
         setLoadingPlan(plan);
         try {
             const priceId = process.env[product.priceEnvKey];
-            const mode = "subscription";
-
             const res = await fetch("/api/checkout", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ priceId, mode }),
+                body: JSON.stringify({ priceId, mode: "subscription" }),
             });
-
             const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.error || "Checkout failed");
-            }
-
-            if (data.url) {
-                window.location.href = data.url;
-            }
+            if (!res.ok) throw new Error(data.error || "Checkout failed");
+            if (data.url) window.location.href = data.url;
         } catch (error) {
             console.error("Checkout error:", error);
             setLoadingPlan(null);
@@ -116,19 +147,76 @@ export default function ProductDetailPage() {
             <Header />
             <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-12">
                 <Link href="/products" className="inline-flex items-center gap-2 text-sm font-medium text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors mb-8">
-                    <ArrowLeft className="w-4 h-4" /> Back to Products
+                    <ArrowLeft className="w-4 h-4" /> 一覧に戻る
                 </Link>
 
+                {/* Screenshot Carousel */}
+                <div className="mb-12">
+                    <div className="relative">
+                        {/* Preview */}
+                        <div className="rounded-2xl overflow-hidden bg-[#0a0a0a] border border-white/[0.06]">
+                            <PreviewComponent slide={slide} />
+                        </div>
+
+                        {/* Nav arrows */}
+                        <button
+                            onClick={() => setSlide(s => Math.max(0, s - 1))}
+                            disabled={slide === 0}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 backdrop-blur flex items-center justify-center disabled:opacity-0 hover:bg-black/80 transition-all"
+                        >
+                            <ChevronLeft className="w-4 h-4 text-white" />
+                        </button>
+                        <button
+                            onClick={() => setSlide(s => Math.min(2, s + 1))}
+                            disabled={slide === 2}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 backdrop-blur flex items-center justify-center disabled:opacity-0 hover:bg-black/80 transition-all"
+                        >
+                            <ChevronRight className="w-4 h-4 text-white" />
+                        </button>
+                    </div>
+
+                    {/* Slide indicators + labels */}
+                    <div className="flex items-center justify-center gap-2 mt-3">
+                        {product.slideLabels.map((label, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setSlide(i)}
+                                className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                                    slide === i
+                                        ? "text-black"
+                                        : "bg-black/[0.05] dark:bg-white/[0.08] text-black/50 dark:text-white/50 hover:bg-black/[0.1]"
+                                }`}
+                                style={slide === i ? { background: "var(--color-accent)" } : undefined}
+                            >
+                                {label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Main content grid */}
                 <div className="grid md:grid-cols-2 gap-12">
                     {/* Left: Details */}
                     <div>
-                        <span className="text-xs font-medium px-2 py-1 bg-black/[0.05] dark:bg-white/[0.1] rounded text-black/80 dark:text-white/80 mb-4 inline-block">
+                        <span className="text-xs font-medium px-2 py-1 bg-black/[0.05] dark:bg-white/[0.1] rounded text-black/80 dark:text-white/80 mb-3 inline-block">
                             {product.category}
                         </span>
-                        <h1 className="text-4xl font-bold mb-6">{product.name}</h1>
+                        <h1 className="text-4xl font-bold mb-3">{product.name}</h1>
+                        <div className="mb-6">
+                            <StarRating rating={product.rating} reviews={product.reviews} />
+                        </div>
                         <p className="text-lg text-black/70 dark:text-white/70 leading-relaxed mb-8">
                             {product.desc}
                         </p>
+
+                        {/* Demo CTA */}
+                        <Link
+                            href={product.demoHref}
+                            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-[var(--color-accent)]/40 text-sm font-semibold mb-8 hover:bg-[var(--color-accent)]/10 transition-colors text-black dark:text-white"
+                        >
+                            <Play className="w-4 h-4" style={{ color: "var(--color-accent)" }} />
+                            無料でデモを試す
+                        </Link>
 
                         <h3 className="font-semibold text-xl mb-4">Key Features</h3>
                         <ul className="flex flex-col gap-3">
@@ -148,8 +236,7 @@ export default function ProductDetailPage() {
                         <div className="border border-black/[0.1] dark:border-white/[0.1] rounded-2xl p-8 bg-white dark:bg-[#191919] sticky top-24 shadow-sm">
                             <h3 className="text-2xl font-bold mb-6">Pricing</h3>
 
-                            <div className="flex flex-col gap-4 mb-8">
-                                {/* Monthly Plan */}
+                            <div className="flex flex-col gap-4 mb-6">
                                 <label className="border border-black/[0.1] dark:border-[var(--color-accent)]/50 rounded-xl p-4 flex items-center justify-between cursor-pointer hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors relative overflow-hidden">
                                     <div className="absolute inset-0 border-2 border-[var(--color-accent)] rounded-xl pointer-events-none"></div>
                                     <div className="flex items-center gap-3">
@@ -166,8 +253,13 @@ export default function ProductDetailPage() {
                                 </label>
                             </div>
 
-                            {/* Checkout Buttons */}
                             <div className="flex flex-col gap-3">
+                                <Link
+                                    href={product.demoHref}
+                                    className="w-full border border-black/[0.15] dark:border-white/[0.15] text-black dark:text-white font-semibold rounded-lg py-3 flex items-center justify-center gap-2 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] transition-colors text-sm"
+                                >
+                                    <Play className="w-4 h-4" /> 無料デモを試す
+                                </Link>
                                 <button
                                     onClick={() => handleCheckout("monthly")}
                                     disabled={loadingPlan !== null}

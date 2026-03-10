@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:qiita.com)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(node:*)",
+      "WebSearch",
+      "Bash(curl:*)",
+      "Bash(taskkill:*)",
+      "Bash(netstat:*)",
+      "Bash(kill:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(grep:*)",
+      "Bash(\"C:\\\\app_projects\\\\アプリ開発ビジネス\\\\.gitignore\":*)",
+      "Bash(sed:*)",
+      "Bash(\"/c/app_projects/アプリ開発ビジネス/.env.local\":*)",
+      "Bash(npm run:*)",
+      "Bash(npx vercel:*)",
+      "Bash(rm:*)",
+      "Read(//c/Users/ginga/.config/**)",
+      "Read(//c/Users/ginga/.config/vercel/**)",
+      "Read(//c/Users/ginga/**)",
+      "Bash(python3:*)",
+      "Bash(\"C:\\\\app_projects\\\\アプリ開発ビジネス\\\\.env.local\":*)",
+      "Bash(gh run:*)"
+    ]
+  }
+}
