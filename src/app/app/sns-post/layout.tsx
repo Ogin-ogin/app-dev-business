@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PenTool, Clock, Settings, ArrowLeft } from "lucide-react";
+import { PenTool, Clock, Settings, ArrowLeft, Star, FileText } from "lucide-react";
 import React from "react";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -11,6 +11,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     const navItems = [
         { name: "Generate", href: "/app/sns-post", icon: PenTool },
         { name: "History", href: "/app/sns-post/history", icon: Clock },
+        { name: "Favorites", href: "/app/sns-post/favorites", icon: Star },
+        { name: "Templates", href: "/app/sns-post/templates", icon: FileText },
         { name: "Settings", href: "/app/sns-post/settings", icon: Settings },
     ];
 

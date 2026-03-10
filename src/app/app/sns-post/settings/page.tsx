@@ -1,8 +1,28 @@
 "use client";
 
-import { Save } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Save, Check } from "lucide-react";
 
 export default function SettingsPage() {
+    const [model, setModel] = useState("gemini");
+    const [hashtags, setHashtags] = useState("#business #entrepreneur #tech");
+    const [saved, setSaved] = useState(false);
+
+    useEffect(() => {
+        // Load on mount
+        const savedModel = localStorage.getItem("app_settings_model");
+        const savedHashtags = localStorage.getItem("app_settings_hashtags");
+        if (savedModel) setModel(savedModel);
+        if (savedHashtags) setHashtags(savedHashtags);
+    }, []);
+
+    const handleSave = () => {
+        localStorage.setItem("app_settings_model", model);
+        localStorage.setItem("app_settings_hashtags", hashtags);
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+    };
+
     return (
         <div className="flex flex-col gap-8 max-w-2xl">
             <div>
@@ -19,14 +39,28 @@ export default function SettingsPage() {
 
                     <div className="flex flex-col gap-3">
                         <label className="flex items-center gap-3 p-3 border border-black/[0.1] dark:border-white/[0.1] rounded-lg cursor-pointer hover:bg-black/[0.02] dark:hover:bg-white/[0.02]">
-                            <input type="radio" name="model" defaultChecked className="accent-[var(--color-accent)] w-4 h-4" />
+                            <input
+                                type="radio"
+                                name="model"
+                                value="gemini"
+                                checked={model === "gemini"}
+                                onChange={(e) => setModel(e.target.value)}
+                                className="accent-[var(--color-accent)] w-4 h-4"
+                            />
                             <div>
-                                <div className="font-medium text-sm">Gemini Flash 2.0 (Fast)</div>
+                                <div className="font-medium text-sm">Gemini Flash 2.5 (Fast)</div>
                                 <div className="text-xs text-black/50 dark:text-white/50">Included in standard plan</div>
                             </div>
                         </label>
                         <label className="flex items-center gap-3 p-3 border border-black/[0.1] dark:border-white/[0.1] rounded-lg cursor-pointer hover:bg-black/[0.02] dark:hover:bg-white/[0.02]">
-                            <input type="radio" name="model" className="accent-[var(--color-accent)] w-4 h-4" />
+                            <input
+                                type="radio"
+                                name="model"
+                                value="claude"
+                                checked={model === "claude"}
+                                onChange={(e) => setModel(e.target.value)}
+                                className="accent-[var(--color-accent)] w-4 h-4"
+                            />
                             <div>
                                 <div className="font-medium text-sm">Claude 3.5 Sonnet (High Quality)</div>
                                 <div className="text-xs text-black/50 dark:text-white/50">Uses Pro credits</div>
@@ -42,13 +76,17 @@ export default function SettingsPage() {
                     <p className="text-xs text-black/60 dark:text-white/60 mb-4">These will be appended to your Instagram and LinkedIn posts automatically.</p>
                     <input
                         type="text"
-                        defaultValue="#business #entrepreneur #tech"
+                        value={hashtags}
+                        onChange={(e) => setHashtags(e.target.value)}
                         className="w-full bg-black/[0.02] dark:bg-white/[0.02] border border-black/[0.1] dark:border-white/[0.1] rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent"
                     />
                 </div>
 
-                <button className="self-start bg-black text-white dark:bg-white dark:text-black font-semibold rounded-md px-5 py-2.5 text-sm flex items-center gap-2 hover:opacity-90 transition-opacity">
-                    <Save className="w-4 h-4" /> Save Preferences
+                <button
+                    onClick={handleSave}
+                    className="self-start bg-black text-white dark:bg-white dark:text-black font-semibold rounded-md px-5 py-2.5 text-sm flex items-center gap-2 hover:opacity-90 transition-opacity"
+                >
+                    {saved ? <><Check className="w-4 h-4 text-green-400" /> Saved</> : <><Save className="w-4 h-4" /> Save Preferences</>}
                 </button>
             </div>
         </div>

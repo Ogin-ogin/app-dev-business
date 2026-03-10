@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ユーザープロファイル: 本人のみ
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      // サブスクリプション: 本人のみ読み取り
+      match /subscriptions/{subId} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow write: if false; // サーバーサイドのみ
+      }
+    }
+
+    // 注文: 本人のみ読み取り
+    match /orders/{orderId} {
+      allow read: if request.auth != null && request.auth.uid == resource.data.uid;
+      allow write: if false; // サーバーサイドのみ
+    }
+
+    // SNS投稿: 本人のみ
+    match /sns_posts/{postId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.uid;
+      allow create: if request.auth != null;
+    }
+
+    // 不満レーダー投稿: 誰でも読み取り可、認証済みユーザーが作成、本人のみ削除
+    match /fuman_posts/{postId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null; // 共感カウント更新
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
+    // 共感: 認証済みユーザーが自分の共感を管理
+    match /fuman_empathies/{empathyId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+
+    // UMAPキャッシュ: 誰でも読み取り、認証済みが書き込み
+    match /fuman_umap_cache/{cacheId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // トレンドデータ: 誰でも読み取り、認証済みが書き込み
+    match /fuman_trends/{trendId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}

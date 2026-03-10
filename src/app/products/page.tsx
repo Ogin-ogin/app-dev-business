@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import RecommendWidget from "@/components/RecommendWidget";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -17,7 +18,6 @@ export default function ProductsPage() {
             name: "SNS投稿AI量産ツール",
             category: "Marketing",
             monthly: 580,
-            buyout: 5800,
             desc: "テーマ入力からX/Instagram/LinkedIn向け投稿文を一括生成するツール。"
         },
         {
@@ -25,7 +25,6 @@ export default function ProductsPage() {
             name: "フリーランス収支ダッシュボード",
             category: "Data Analysis",
             monthly: 680,
-            buyout: 6800,
             desc: "売上・経費入力でグラフ化＋AIによる来月予測＆節税アドバイス。"
         },
         {
@@ -33,8 +32,14 @@ export default function ProductsPage() {
             name: "AIライフログ＆振り返り",
             category: "Productivity",
             monthly: 480,
-            buyout: 4800,
             desc: "毎日の作業・気分のログからAIが週次レポートと分析を自動生成。"
+        },
+        {
+            id: "fuman-radar",
+            name: "不満レーダー",
+            category: "Market Research",
+            monthly: 500,
+            desc: "民衆の不満・愚痴を匿名収集してAIが分析・可視化。リアルな市場ニーズを低コストで把握できます。"
         }
     ];
 
@@ -42,12 +47,14 @@ export default function ProductsPage() {
         <div className="min-h-screen flex flex-col">
             <Header />
             <main className="flex-1 w-full max-w-5xl mx-auto px-6 py-16">
-                <div className="mb-12">
+                <div className="mb-10">
                     <h1 className="text-4xl font-bold mb-4">既製品アプリ一覧</h1>
                     <p className="text-black/60 dark:text-white/60">
-                        すぐに使えるAIツールを月額サブスクリプションまたは買い切りでご利用いただけます。
+                        すぐに使えるAIツールを月額サブスクリプションでご利用いただけます。AI利用料・ホスティング費用込み。
                     </p>
                 </div>
+
+                <RecommendWidget />
 
                 <div className="flex flex-col gap-6">
                     {products.map(p => (
@@ -62,7 +69,7 @@ export default function ProductsPage() {
                                     </div>
                                     <div className="text-right">
                                         <div className="font-semibold text-lg">¥{p.monthly.toLocaleString()} <span className="text-sm font-normal text-black/60 dark:text-white/60">/ 月</span></div>
-                                        <div className="text-sm text-black/60 dark:text-white/60">または ¥{p.buyout.toLocaleString()} 買い切り</div>
+                                        <div className="text-xs text-black/50 dark:text-white/50">AI利用料込み</div>
                                     </div>
                                 </div>
                                 <p className="text-black/80 dark:text-white/80 mb-6">{p.desc}</p>

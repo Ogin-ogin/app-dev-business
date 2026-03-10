@@ -20,8 +20,25 @@
   - サイドバーナビゲーション実装。
 
 ## 次のステップ (Next Actions)
-- 次は「App1 バックエンドAPI連携 (Gemini / Claude / Database)」の実装に進みます。
-- APIルート (`/api/generate-posts` など) の作成およびFirestoreとの連携を行います。
+- 次は「App2」などの追加機能や、決済機能（現在は審査中）を通じた本格運用のテストに進みます。
+- Vercel上での動作確認をお願いします（環境変数の設定が必要）。
+
+## App1ステータス (Gemini API 連携)
+- **完了**: `/api/generate-posts` を作成し、Gemini 2.5 FlashでX/LinkedIn/Instagram向け投稿を生成。
+- **完了**: 生成履歴を `firebase-admin` を使ってFirestore (`sns_posts`コレクション) に保存。
+- **完了**: フロントエンド (`/app/sns-post`) からの本番API呼び出し処理を実装。
+
+## App1 機能強化 (2026-03-08 完了)
+- **Phase 1**: 履歴検索機能 - トピック検索とトーンフィルター実装
+- **Phase 2**: お気に入り & テンプレート機能
+  - お気に入り登録/管理機能
+  - テンプレート保存/読み込み機能
+  - Favorites/Templatesページ追加
+  - ナビゲーションに新メニュー追加
+- **Phase 3**: 再編集 & 再生成機能
+  - 投稿内容の編集機能（文字数カウンター付き）
+  - AI再生成機能（改善/短縮アクション）
+  - 統合PostDetailModalコンポーネント
 
 ## セキュリティ・Stripe対応ステータス
 - **Basic認証**: `middleware.ts`を作成・導入済（`/dashboard`、`/admin`保護用。本番の`.env`でID/PASS設定が必要）。

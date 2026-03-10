@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Loader2, Copy, Check } from "lucide-react";
+import { Sparkles, Loader2, Copy, Check, FileText } from "lucide-react";
+import TemplateSelector from "@/components/sns-post/TemplateSelector";
 
 export default function GeneratorPage() {
     const [topic, setTopic] = useState("");
@@ -9,6 +10,7 @@ export default function GeneratorPage() {
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState<any>(null);
     const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+    const [showTemplateSelector, setShowTemplateSelector] = useState(false);
 
     const handleGenerate = async () => {
         if (!topic) return;
@@ -48,7 +50,16 @@ export default function GeneratorPage() {
     return (
         <div className="flex flex-col gap-8 max-w-3xl">
             <div>
-                <h1 className="text-2xl font-bold mb-2">Create New Post</h1>
+                <div className="flex items-start justify-between gap-4 mb-2">
+                    <h1 className="text-2xl font-bold">Create New Post</h1>
+                    <button
+                        onClick={() => setShowTemplateSelector(true)}
+                        className="flex items-center gap-2 text-sm text-[var(--color-accent)] font-medium hover:opacity-80 transition-opacity"
+                    >
+                        <FileText className="w-4 h-4" />
+                        Load Template
+                    </button>
+                </div>
                 <p className="text-sm text-black/60 dark:text-white/60">
                     Enter your topic and tone. Our AI will craft optimized posts for X, LinkedIn, and Instagram.
                 </p>
@@ -123,6 +134,17 @@ export default function GeneratorPage() {
                         </div>
                     ))}
                 </div>
+            )}
+
+            {/* Template Selector Modal */}
+            {showTemplateSelector && (
+                <TemplateSelector
+                    onSelect={(template) => {
+                        setTopic(template.topic);
+                        setTone(template.tone);
+                    }}
+                    onClose={() => setShowTemplateSelector(false)}
+                />
             )}
         </div>
     );

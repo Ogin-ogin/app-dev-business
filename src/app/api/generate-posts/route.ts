@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { adminDb } from '@/lib/firebase-admin';
+import { getUidFromRequest } from '@/lib/get-uid-from-request';
 
 // Initialize Gemini API
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
@@ -14,7 +15,21 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Topic is required' }, { status: 400 });
         }
 
-        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+        // 1ユーザー1回制限
+        const uid = await getUidFromRequest(req);
+        if (uid) {
+            const usageRef = adminDb.collection('usage').doc(uid);
+            const usageDoc = await usageRef.get();
+            if (usageDoc.data()?.snsPostGenerated) {
+                return NextResponse.json(
+                    { error: 'AI生成は1アカウント1回までご利用いただけます。' },
+                    { status: 403 }
+                );
+            }
+            await usageRef.set({ snsPostGenerated: true }, { merge: true });
+        }
+
+        const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite-preview' });
 
         const prompt = `
 You are an expert social media manager.
