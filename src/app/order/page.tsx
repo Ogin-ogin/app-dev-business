@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Sparkles, Send, Loader2, FileCheck, Info } from 'lucide-react';
+import { Sparkles, Send, Loader2, FileCheck, Info, AlertCircle } from 'lucide-react';
 
 interface Message {
     role: 'user' | 'assistant';
@@ -28,11 +28,21 @@ export default function OrderPage() {
     const [claudeCodeDoc, setClaudeCodeDoc] = useState<string>('');
     const [isSaving, setIsSaving] = useState(false);
     const [showPlanModal, setShowPlanModal] = useState(false);
+    const [ordersFull, setOrdersFull] = useState(false);
+    const [availabilityChecked, setAvailabilityChecked] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
+
+    useEffect(() => {
+        fetch('/api/order/availability')
+            .then(r => r.json())
+            .then(d => { setOrdersFull(!d.available); })
+            .catch(() => {})
+            .finally(() => setAvailabilityChecked(true));
+    }, []);
 
     // Try to extract spec JSON from the last assistant message when spec is generated
     useEffect(() => {
@@ -205,6 +215,21 @@ export default function OrderPage() {
                     </p>
                 </div>
 
+                {/* Orders full banner */}
+                {availabilityChecked && ordersFull && (
+                    <div className="mb-6 rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4">
+                        <div className="flex items-start gap-3">
+                            <AlertCircle className="w-5 h-5 mt-0.5 shrink-0 text-red-500" />
+                            <div>
+                                <p className="font-semibold text-red-700 dark:text-red-400 text-sm">現在、新規ヒアリングの受付を一時停止中です</p>
+                                <p className="text-sm text-red-600/80 dark:text-red-400/80 mt-1">
+                                    対応可能な案件数（10件）に達しました。既存の案件が完了次第、受付を再開します。しばらくお待ちください。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Fee disclosure */}
                 <div className="mb-6 rounded-xl border border-black/[0.1] dark:border-white/[0.1] bg-black/[0.02] dark:bg-white/[0.03] p-4">
                     <div className="flex items-start gap-3">
@@ -297,13 +322,13 @@ export default function OrderPage() {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                placeholder="メッセージを入力してください..."
-                                disabled={isLoading}
+                                placeholder={ordersFull ? "現在、新規受付を停止中です" : "メッセージを入力してください..."}
+                                disabled={isLoading || ordersFull}
                                 className="w-full bg-black/[0.03] dark:bg-white/[0.05] border-none rounded-lg pl-4 pr-12 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] disabled:opacity-50"
                             />
                             <button
                                 onClick={sendMessage}
-                                disabled={isLoading || !input.trim()}
+                                disabled={isLoading || !input.trim() || ordersFull}
                                 className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors disabled:opacity-30"
                             >
                                 {isLoading ? (

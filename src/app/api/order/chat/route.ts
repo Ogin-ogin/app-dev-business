@@ -157,6 +157,20 @@ export async function POST(req: Request) {
         // 新規セッション開始（最初のメッセージ）時のみクレジット確認
         const isNewSession = !sessionId;
         if (isNewSession) {
+            // 受付上限チェック（未完了プロジェクトが10件以上なら受付停止）
+            const ORDER_LIMIT = 10;
+            const activeProjectsSnap = await adminDb.collection('projects')
+                .where('status', 'in', ['pending', 'paid'])
+                .count()
+                .get();
+            const activeCount = activeProjectsSnap.data().count;
+            if (activeCount >= ORDER_LIMIT) {
+                return NextResponse.json({
+                    error: `現在、受付件数が上限（${ORDER_LIMIT}件）に達しているため、新規のヒアリングを受け付けていません。しばらくお待ちの上、再度お試しください。`,
+                    ordersFull: true,
+                }, { status: 503 });
+            }
+
             // 既存の無料利用履歴確認
             const usageRef = adminDb.collection('usage').doc(uid);
             const usageDoc = await usageRef.get();
