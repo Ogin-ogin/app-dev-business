@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, ShoppingCart, Users, MessageSquare, BarChart2, Shield } from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Users, MessageSquare, BarChart2, Shield, FileText } from "lucide-react";
 import React from "react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -10,6 +10,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     const navItems = [
         { name: "ダッシュボード", href: "/admin", icon: LayoutDashboard },
+        { name: "ヒアリング一覧", href: "/admin/hearings", icon: FileText },
         { name: "注文管理", href: "/admin/orders", icon: ShoppingCart },
         { name: "ユーザー管理", href: "/admin/users", icon: Users },
         { name: "フィードバック", href: "/admin/feedback", icon: MessageSquare },
